@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriber Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .edit-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            z-index: 1000;
+            max-height: 80%;
+            overflow-y: auto;
+            width: 80%;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .form-input {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .form-input input,
+        .form-input select {
+            padding: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .admin-login {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subscribe</h1>
+        <form id="subscriberForm">
+            <div class="form-input">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-input">
+                <label for="profileCode">Profile Code</label>
+                <input type="text" id="profileCode" placeholder="Enter profile code" value="NOT AVAILABLE NOW" required>
+            </div>
+            <div class="form-input">
+                <label for="examTownCode">Exam Town Code</label>
+                <input type="text" id="examTownCode" placeholder="Enter exam town code" value="NOT AVAILABLE NOW" required>
+            </div>
+
+            <div class="form-input">
+                <label>Assistance Package</label>
+                <label>
+                    <input type="radio" name="assistancePackage" value="Direct System" required>
+                    Direct to System
+                </label>
+                <label>
+                    <input type="radio" name="assistancePackage" value="Direct Mobile">
+                    Direct to Mobile
+                </label>
+                <label>
+                    <input type="radio" name="assistancePackage" value="Merge Package">
+                    Merge Package
+                </label>
+                <label>
+                    <input type="radio" name="assistancePackage" value="Per Subject">
+                    Per Subject
+                </label>
+            </div>
+
+            <div class="form-input">
+                <label for="score">Score</label>
+                <input type="number" id="score" placeholder="Enter Score" required>
+            </div>
+
+            <button type="submit">Subscribe</button>
+        </form>
+        <div id="message"></div>
+
+        <h2>Last Subscriber Details</h2>
+        <div id="lastSubscriberDetails"></div>
+
+        <!-- Section for editing subscriber details -->
+        <div class="overlay" id="overlay"></div>
+        <div class="edit-form" id="editForm">
+            <h2>Edit Subscriber Details</h2>
+            <div class="form-input">
+                <label for="editFullName">Full Name</label>
+                <input type="text" id="editFullName" required>
+            </div>
+            <div class="form-input">
+                <label for="editProfileCode">Profile Code</label>
+                <input type="text" id="editProfileCode" value="NOT AVAILABLE NOW" required>
+            </div>
+            <div class="form-input">
+                <label for="editExamTownCode">Exam Town Code</label>
+                <input type="text" id="editExamTownCode" value="NOT AVAILABLE NOW" required>
+            </div>
+            <div class="form-input">
+                <label for="editAssistancePackage">Assistance Package</label>
+                <select id="editAssistancePackage">
+                    <option value="Direct System">Direct to System</option>
+                    <option value="Direct Mobile">Direct to Mobile</option>
+                    <option value="Merge Package">Merge Package</option>
+                    <option value="Per Subject">Per Subject</option>
+                </select>
+            </div>
+            <div class="form-input">
+                <label for="editScore">Score</label>
+                <input type="number" id="editScore" required>
+            </div>
+            <button id="saveChanges">Save Changes</button>
+            <button id="cancelEdit">Cancel</button>
+        </div>
+
+        <!-- Admin Login Button -->
+        <div class="admin-login">
+            <a href="admin.html"><button>Admin Login</button></a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('subscriberForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const profileCode = document.getElementById('profileCode').value;
+            const examTownCode = document.getElementById('examTownCode').value;
+            const assistancePackage = document.querySelector('input[name="assistancePackage"]:checked').value;
+            const score = document.getElementById('score').value;
+
+            // Score validation
+            if (score < 100 || score > 400) {
+                alert("Score must be between 100 and 400.");
+                return;
+            }
+
+            // Serial number generation
+            let serialNumber = parseInt(localStorage.getItem('serialNumber')) || 1;
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+
+            const newSubscriber = {
+                serialNumber,
+                fullName,
+                profileCode,
+                examTownCode,
+                assistancePackage,
+                score
+            };
+
+            subscribers.push(newSubscriber);
+            localStorage.setItem('subscribers', JSON.stringify(subscribers));
+            localStorage.setItem('serialNumber', serialNumber + 1);
+
+            // Show message and reset form
+            document.getElementById('message').innerText = 'Subscribed successfully!';
+            document.getElementById('subscriberForm').reset();
+
+            // Display the last subscriber details for editing
+            displayLastSubscriber(subscribers);
+        });
+
+        function displayLastSubscriber(subscribers) {
+            const lastSubscriber = subscribers[subscribers.length - 1]; // Get the last subscriber
+
+            if (lastSubscriber) {
+                const lastSubscriberDetails = `
+                    <p><strong>Full Name:</strong> ${lastSubscriber.fullName}</p>
+                    <p><strong>Profile Code:</strong> ${lastSubscriber.profileCode}</p>
+                    <p><strong>Exam Town Code:</strong> ${lastSubscriber.examTownCode}</p>
+                    <p><strong>Assistance Package:</strong> ${lastSubscriber.assistancePackage}</p>
+                    <p><strong>Score:</strong> ${lastSubscriber.score}</p>
+                    <button onclick="editSubscriber(${lastSubscriber.serialNumber})">Edit</button>
+                `;
+
+                document.getElementById('lastSubscriberDetails').innerHTML = lastSubscriberDetails;
+            }
+        }
+
+        function editSubscriber(serialNumber) {
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+            const subscriber = subscribers.find(s => s.serialNumber === serialNumber);
+
+            if (subscriber) {
+                document.getElementById('editFullName').value = subscriber.fullName;
+                document.getElementById('editProfileCode').value = subscriber.profileCode;
+                document.getElementById('editExamTownCode').value = subscriber.examTownCode;
+                document.getElementById('editScore').value = subscriber.score;
+                document.getElementById('editAssistancePackage').value = subscriber.assistancePackage;
+
+                // Show overlay and edit form
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('editForm').style.display = 'block';
+            }
+
+            // Save changes handler
+            document.getElementById('saveChanges').onclick = function() {
+                subscriber.fullName = document.getElementById('editFullName').value;
+                subscriber.profileCode = document.getElementById('editProfileCode').value;
+                subscriber.examTownCode = document.getElementById('editExamTownCode').value;
+                subscriber.assistancePackage = document.getElementById('editAssistancePackage').value;
+                subscriber.score = document.getElementById('editScore').value;
+
+                localStorage.setItem('subscribers', JSON.stringify(subscribers));
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('editForm').style.display = 'none';
+                displayLastSubscriber(subscribers);
+            };
+
+            // Cancel button handler
+            document.getElementById('cancelEdit').onclick = function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('editForm').style.display = 'none';
+            };
+        }
+
+        // Load last subscriber details when the page is opened
+        window.onload = function() {
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+            displayLastSubscriber(subscribers);
+        };
+    </script>
+</body>
+</html>

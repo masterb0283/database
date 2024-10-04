@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin View</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            text-align: left;
+        }
+
+        img {
+            max-width: 100px;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Make Full Name column wider */
+        th:nth-child(2), td:nth-child(2) {
+            width: 40%; /* Give more space to Full Name */
+        }
+
+        /* Odd and even row styles */
+        .odd-row {
+            background-color: #c8e6c9; /* Light green for odd rows */
+        }
+
+        .even-row {
+            background-color: #ffffff; /* White for even rows */
+        }
+
+        /* Form styles */
+        .edit-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            z-index: 1000;
+            max-height: 80%; /* Limit the max height of the form */
+            overflow-y: auto; /* Enable vertical scrolling */
+            width: 80%; /* Set width for the form */
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .form-input {
+            margin: 10px 0;
+        }
+
+        .form-input input,
+        .form-input select {
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin View</h1>
+        <button id="viewSubscribers">View Subscribers</button>
+        <div id="subscribersList"></div>
+    </div>
+
+    <!-- Edit Subscriber Form -->
+    <div class="overlay" id="overlay"></div>
+    <div class="edit-form" id="editForm">
+        <h2>Edit Subscriber</h2>
+        <div class="form-input">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName">
+        </div>
+        <div class="form-input">
+            <label for="editProfileCode">Profile Code</label>
+            <input type="text" id="editProfileCode">
+        </div>
+        <div class="form-input">
+            <label for="editExamTownCode">Exam Town Code</label>
+            <input type="text" id="editExamTownCode">
+        </div>
+        <div class="form-input">
+            <label for="editBatch">Batch</label>
+            <select id="editBatch">
+                <option value="First Batch">First Batch</option>
+                <option value="Second Batch">Second Batch</option>
+                <option value="Third Batch">Third Batch</option>
+                <option value="Last Batch">Last Batch</option>
+            </select>
+        </div>
+        <div class="form-input">
+            <label for="editAssistancePackage">Assistance Package</label>
+            <select id="editAssistancePackage">
+                <option value="Direct to System">Direct to System</option>
+                <option value="Direct to Mobile">Direct to Mobile</option>
+                <option value="Merge Package">Merge Package</option>
+                <option value="Per Subject">Per Subject</option>
+            </select>
+        </div>
+        <div class="form-input">
+            <label for="editScore">Score</label>
+            <input type="text" id="editScore">
+        </div>
+        <button id="saveChanges">Save Changes</button>
+        <button id="cancelEdit">Cancel</button>
+    </div>
+
+    <script>
+        let currentEditIndex = -1; // Store the index of the subscriber being edited
+
+        document.getElementById('viewSubscribers').addEventListener('click', function() {
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+            const subscribersList = document.getElementById('subscribersList');
+
+            // Clear previous list
+            subscribersList.innerHTML = '';
+
+            if (subscribers.length === 0) {
+                subscribersList.innerHTML = '<p>No subscribers found.</p>';
+                return;
+            }
+
+            const table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serial Number</th>
+                            <th>Full Name</th>
+                            <th>Profile Code</th>
+                            <th>Exam Town Code</th>
+                            <th>Batch</th>
+                            <th>Assistance Package</th>
+                            <th>Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${subscribers.map((subscriber, index) => `
+                            <tr class="${index % 2 === 0 ? 'even-row' : 'odd-row'}">
+                                <td>${subscriber.serialNumber}</td>
+                                <td>${subscriber.fullName}</td>
+                                <td>${subscriber.profileCode}</td>
+                                <td>${subscriber.examTownCode}</td>
+                                <td>${subscriber.batch}</td>
+                                <td>${subscriber.assistancePackage}</td>
+                                <td>${subscriber.score}</td>
+                                <td><button onclick="editSubscriber(${index})">Edit</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            subscribersList.innerHTML = table;
+        });
+
+        function editSubscriber(index) {
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+            const subscriber = subscribers[index];
+
+            // Populate form with the subscriber's data
+            document.getElementById('editFullName').value = subscriber.fullName;
+            document.getElementById('editProfileCode').value = subscriber.profileCode || '';
+            document.getElementById('editExamTownCode').value = subscriber.examTownCode || '';
+            document.getElementById('editBatch').value = subscriber.batch; // Updated field
+            document.getElementById('editAssistancePackage').value = subscriber.assistancePackage; // Updated field
+            document.getElementById('editScore').value = subscriber.score;
+
+            // Show the form
+            document.getElementById('editForm').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+
+            // Store the current index
+            currentEditIndex = index;
+        }
+
+        document.getElementById('saveChanges').addEventListener('click', function() {
+            const subscribers = JSON.parse(localStorage.getItem('subscribers')) || [];
+
+            // Update subscriber data
+            subscribers[currentEditIndex].fullName = document.getElementById('editFullName').value;
+            subscribers[currentEditIndex].profileCode = document.getElementById('editProfileCode').value;
+            subscribers[currentEditIndex].examTownCode = document.getElementById('editExamTownCode').value;
+            subscribers[currentEditIndex].batch = document.getElementById('editBatch').value; // Updated field
+            subscribers[currentEditIndex].assistancePackage = document.getElementById('editAssistancePackage').value; // Updated field
+            subscribers[currentEditIndex].score = document.getElementById('editScore').value;
+
+            // Save updated subscribers list to localStorage
+            localStorage.setItem('subscribers', JSON.stringify(subscribers));
+
+            // Hide the form
+            document.getElementById('editForm').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+
+            // Refresh the list
+            document.getElementById('viewSubscribers').click();
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', function() {
+            // Hide the form without saving changes
+            document.getElementById('editForm').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: white;
+    color: black;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+    /* margin: 4px; */
+    padding: 30px;
+    padding-bottom: 2px;
+    background-color: black;
+    color: whitesmoke;
+}
+nav a{
+font-weight: bold;
+}
+
+.gen1{
+    display: flex;
+    gap: 0px;
+    margin: 0px;
+    /* border: 2px solid red; */
+
+}
+nav h1{
+    /* gap: 2px; */
+}
+nav h2{
+    padding-left: 20px;
+}
+.gen1 img {
+    display: flex;
+    width: 80px;
+    border-radius: 60px;
+    position: relative; /* Ensure it's positioned for animation */
+    bottom: 1px;
+
+    /* Animation properties */
+    animation: moveUpDown 3s infinite ease-in-out; /* Name of animation, duration, and type */
+}
+
+/* Keyframes for vertical movement */
+@keyframes moveUpDown {
+    0%, 100% {
+        bottom: 20px; /* Starting and ending position */
+    }
+    50% {
+        bottom: 0px; /* Midpoint (moves up) */
+    }
+}
+
+nav h3{
+    padding-right: 50px;
+}
+
+/* .gen2{
+    display: flex;
+    justify-content: center;
+    width: 60%; */
+    /* border-bottom: 3px solid red; */
+/* } */
+.gen2 h1{
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+    color: darkblue;
+    /* padding-bottom: 50px; */
+
+ /* border-bottom: 1px solid red; */
+}
+
+.img1 {
+    position: relative;
+    /* text-align: center; Centers the paragraph under the image */
+    
+}
+
+.img1 img {
+    width: 700px;
+    margin: 20px;
+    border-radius: 10px;
+    /* display: block; */
+    margin-left: 15%;
+    margin-right: auto;
+}
+
+.img1 p {
+    position: absolute;
+    bottom: 10px; /* Adjust this value based on your need */
+    left: 35%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 18px;
+    /* background-color: rgba(255, 255, 255, 0.6); Slight background to highlight text */
+    padding: 5px 10px;
+    border-radius: 5px;
+    top: 20%;
+    font-size: 23px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.gen3 {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: baseline; */
+    gap: 10px;
+    margin-left: 15%;
+
+}
+h1{
+font-size: 20px;
+font-weight: bolder;
+font-family: 'Courier New', Courier, monospace;
+text-transform: capitalize;
+}
+i{
+    color: darkred;
+    font-size: 20px;
+}
+. p{
+
+}
+
+.gen3 img{
+    background-color: rgb(135, 11, 11);
+    margin-left: 20%;
+    padding: 10px;
+    border-radius: 5px;
+}
+.gen4{
+    display: flex;
+    flex-direction: column; 
+    /* justify-content: baseline; */
+     gap: 5px;
+    margin-left: 15% 
+}
+
+.emg1{
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    gap: 10px;
+    /* text-transform: capitalize; */
+}
+.gen4 h1{
+    display: flex;
+    /* text-transform: capitalize; */
+    text-align: 2px;
+    
+
+}
+.gen4 img{
+    background-color: brown;
+    padding: 10px;
+    margin: 20px;
+    margin-left: 30%;
+    /* margin: 20px; */
+}
+
+
+
+
+
+
+
+
+
+.part1{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+.part1 img{
+    background-color: aquamarine;
+    margin-left: 30%;
+    padding: 9px;
+    border-radius: 10px;
+}
+.part1 h1{
+    justify-content: center;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.part1 p{
+    color: green;
+    margin-left: 10%;
+    margin-top: 10px;
+    /* text-align: center; */
+}
+
+/* Form Section Styles */
+.form-section {
+    margin-top: 40px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f2f2f2;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h2 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    color: darkblue;
+    margin-bottom: 20px;
+    text-transform: capitalize;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: darkblue;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-section {
+        width: 95%;
+        padding: 15px;
+    }
+
+    input[type="text"], input[type="number"], textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    button[type="submit"] {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+/* AI Response Section Styles */
+#ai-response {
+    display: none; /* Initially hidden */
+    background-color: #e7f3ff; /* Light blue background */
+    border: 2px solid #2196F3; /* Blue border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding around the content */
+    margin-top: 20px; /* Space above the response */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+#response-content {
+    color: #333; /* Dark text for better readability */
+    font-weight: bold; /* Bold text for emphasis */
+    font-family: 'Courier New', Courier, monospace; /* Matching font style */
+}
+
+/* Responsive adjustments for AI response section */
+@media (max-width: 768px) {
+    #ai-response {
+        padding: 15px; /* Adjust padding for smaller screens */
+    }
+}

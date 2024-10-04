@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEALTHY HEALTH</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="gen1">
+                <div><img src="./diet image1.jpg"></div>
+                <div><a href="./index.html"> <h2>HOME</h2></a>
+                    <!-- <h2>HOME</h2></div> -->
+                </div>
+            </div>
+
+            <div><a href="./log2.html"><h1>HOW CAN WE HELP ?</h1></a></div>
+            <div><h3>DIETS FOR ME</h3></div>
+        </nav>
+    </header>
+
+    <div class="part1">
+        <div><img src="./food image.jpg" width="300px"></div>
+        <div>
+            <p>The idea behind the diet plan in Eat Right for Your Type, also called the blood type diet, is that following a diet and lifestyle 
+            <br>that suits your blood type will make you healthier, help you reach your ideal weight, and even slow down the aging process.
+            </p>
+        </div>
+        <div><h1>How can we help you to choose the right diet?</h1></div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-section">
+        <h2>Fill out the form below to get personalized diet advice</h2>
+        <form id="dietForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="blood-group">Blood Group:</label>
+            <input type="text" id="blood-group" name="blood-group" required><br><br>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required><br><br>
+
+            <label for="address">State:</label>
+            <input type="text" id="address" name="address" required><br><br>
+
+            <label for="help">How can we help you?</label><br>
+            <textarea id="help" name="help" placeholder="How can we help you?" rows="4" cols="50" required></textarea><br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="ai-response">
+        <h2>AI Response:</h2>
+        <div id="response-content">
+            <!-- AI response will be displayed here -->
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('dietForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting
+    
+            // Gather form data
+            const formData = {
+                name: document.getElementById('name').value,
+                bloodGroup: document.getElementById('blood-group').value,
+                age: document.getElementById('age').value,
+                address: document.getElementById('address').value,
+                help: document.getElementById('help').value
+            };
+    
+            // Show loading message
+            document.getElementById('ai-response').style.display = 'block';
+            document.getElementById('response-content').innerHTML = '<p>Processing your request...</p>';
+    
+            // Example: Simulating an AI API call with a mock response
+            setTimeout(() => {
+                // Display mock response
+                const aiResponse = `Hello ${formData.name}, based on your input (blood group: ${formData.bloodGroup}), here's our advice:
+                - You should focus on eating more vegetables.
+                - Drink plenty of water daily.
+                - Consider following a diet rich in protein and low in processed carbs for optimal health.`;
+    
+                // Display AI response
+                document.getElementById('response-content').innerHTML = `<p>${aiResponse}</p>`;
+            }, 2000); // Simulating network delay
+    
+            // Real API integration (move inside the event handler)
+            fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_API_KEY' // Replace with your API key
+                },
+                body: JSON.stringify({
+                    prompt: `Name: ${formData.name}, Blood Group: ${formData.bloodGroup}, Age: ${formData.age}, Help: ${formData.help}`,
+                    max_tokens: 150
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response-content').innerHTML = `<p>${data.choices[0].text}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response-content').innerHTML = '<p>Error processing your request.</p>';
+            });
+        });
+    </script>
+    
+
+</body>
+</html>
